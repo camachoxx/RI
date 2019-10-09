@@ -69,9 +69,13 @@ class RetrievalModelsMatrix:
     def score_lmjm(self, query, lam):
         
         query_vector = self.vectorizer.transform([query]).toarray()
-        
+        a=self.tf
+        b=self.docLen[:,None]
         #probabilidades
-        Pd = self.tf / self.docLen[:,None]
+        with np.errstate(divide='ignore', invalid='ignore'):
+            Pd = np.true_divide( a, b )
+            Pd[ ~ np.isfinite( Pd )] = 0  # -inf inf NaN
+        #Pd = self.tf / self.docLen[:,None]
         Pc = self.Mc
 
         #elevar ao vetor da query (query_vector)
@@ -79,7 +83,7 @@ class RetrievalModelsMatrix:
         Ec = np.power(Pc, query_vector)
         
         #produto das probabilidades
-        doc_scores = np.prod(lam*Ed + (1-lam)*Ec, axis=1)
+        doc_scores = np.longdouble(np.prod(lam*Ed + (1-lam)*Ec, axis=1))
         
         return doc_scores
         
