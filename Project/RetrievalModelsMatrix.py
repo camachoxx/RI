@@ -126,7 +126,7 @@ class RetrievalModelsMatrix:
         
         new_query = (1-alfa)*query_vector + alfa*P_RM1
         
-        doc_scores = f(new_query, lam, query_to_vector=False)
+        doc_scores = model(new_query, parameter, query_to_vector=False)
         
         return doc_scores
 
